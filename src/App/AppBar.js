@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components";
+import { AppContext, AppUpdateContext } from "./AppProvider";
 
 const Logo = styled.div`
   font-size: 1.5em;
@@ -23,8 +24,14 @@ const toProperCase = (lower) => {
   return lower.charAt(0).toUpperCase() + lower.substring(1);
 };
 const ControlButton = ({ name, active }) => {
+  const page = useContext(AppContext);
+  const setPage = useContext(AppUpdateContext);
+  console.log(useContext(AppContext));
+  console.log("Page=" + page);
   return (
-    <ControlButtonElem active={active}>{toProperCase(name)}</ControlButtonElem>
+    <ControlButtonElem onClick={()=>setPage(name)} active={page.page === name}>
+      {toProperCase(name)}
+    </ControlButtonElem>
   );
 };
 const AppBar = () => {
@@ -32,7 +39,7 @@ const AppBar = () => {
     <Bar>
       <Logo>CyptoDash</Logo>
       <div></div>
-      <ControlButton active name="dashboard" />
+      <ControlButton  name="dashboard" />
       <ControlButton name="settings" />
     </Bar>
   );
