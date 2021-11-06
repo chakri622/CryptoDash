@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+const cc = require("cryptocompare");
 export const AppContext = React.createContext();
 export const AppUpdateContext = React.createContext();
 
@@ -16,12 +16,26 @@ function AppProvider({ children }) {
     setPage({ firstVisit: false, page: "dashboard" });
     localStorage.setItem("cryptoDash", JSON.stringify({ test: "hello" }));
   };
+  //Use state
   const [page, setPage] = useState({
     page: "dashboard",
     ...savedSettings(),
 
     confirmFavorites: confirmFavorites,
   });
+
+  const [fetchCoins, setfetchCoins] = useState([]);
+  //Use effect
+  useEffect(() => {
+    const fetchMyApi = async () => {
+      let coinList = (await cc.coinList()).Data;
+      console.log(coinList);
+      setfetchCoins(coinList);
+    };
+    fetchMyApi();
+    return () => {};
+  }, [fetchCoins]);
+  //fetch
   const setCurrentPage = (page) => setPage({ page });
 
   console.log("Page=" + page);
