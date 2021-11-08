@@ -12,7 +12,7 @@ function WelcomeMessage() {
       </div>
     );
   } else {
-    return <></>;
+    return null;
   }
 }
 
