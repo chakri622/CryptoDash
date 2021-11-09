@@ -29,14 +29,14 @@ function AppProvider({ children }) {
   useEffect(() => {
     const fetchMyApi = async () => {
       let coinList = (await cc.coinList()).Data;
-      console.log(coinList);
+      //console.log(coinList);
       setfetchCoins(coinList);
     };
     fetchMyApi();
     return () => {};
   }, [fetchCoins]);
   //fetch
-  const setCurrentPage = (page) => setPage({ page });
+  const setCurrentPage = (page) => setPage({ page, fetchCoins });
 
   console.log("Page=" + page);
   return (

@@ -26,10 +26,13 @@ const toProperCase = (lower) => {
 const ControlButton = ({ name, active }) => {
   const page = useContext(AppContext);
   const setPage = useContext(AppUpdateContext);
-  console.log(useContext(AppContext));
-  console.log("Page=" + page);
+  //console.log(useContext(AppContext));
+  //console.log("Page=" + page);
   return (
-    <ControlButtonElem onClick={()=>setPage(name)} active={page.page === name}>
+    <ControlButtonElem
+      onClick={() => setPage(name)}
+      active={page.page === name}
+    >
       {toProperCase(name)}
     </ControlButtonElem>
   );
@@ -39,7 +42,7 @@ const AppBar = () => {
     <Bar>
       <Logo>CyptoDash</Logo>
       <div></div>
-      <ControlButton  name="dashboard" />
+      <ControlButton name="dashboard" />
       <ControlButton name="settings" />
     </Bar>
   );
