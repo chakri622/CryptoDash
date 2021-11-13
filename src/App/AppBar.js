@@ -27,10 +27,13 @@ const ControlButton = ({ name, active }) => {
   const page = useContext(AppContext);
   const setPage = useContext(AppUpdateContext);
   //console.log(useContext(AppContext));
-  //console.log("Page=" + page);
+  //console.log("ApplayoutPage=" + JSON.stringify(page));
   return (
     <ControlButtonElem
-      onClick={() => setPage(name)}
+      onClick={() => {
+        // name;
+        setPage(name);
+      }}
       active={page.page === name}
     >
       {toProperCase(name)}
