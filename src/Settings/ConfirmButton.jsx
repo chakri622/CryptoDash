@@ -32,7 +32,7 @@ export default function ConfirmButton() {
             Confirm Favorites
           </ConfirmButtonStyled>
         </CenterDiv>
-      </div>
+      </div> 
     );
   }
   return <div></div>;
