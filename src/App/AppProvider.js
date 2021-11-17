@@ -43,12 +43,19 @@ function AppProvider({ children }) {
   };
 
   const confirmFavorites = (favorites) => {
-    setPage((prevPage) => ({ ...prevPage, firstVisit: false }));
+    setPage((prevPage) => {
+      fetchPrices();
+      return { ...prevPage, firstVisit: false, page: "dashboard" };
+    });
     console.log("confirm Favorites=" + favorites);
     localStorage.setItem(
       "cryptoDash",
       JSON.stringify({ favorites: favorites })
     );
+  };
+
+  const setFilteredCoins = (filteredCoins) => {
+    setPage((prevPage) => ({ ...prevPage, filteredCoins: filteredCoins }));
   };
   //Use state
   const [page, setPage] = useState(() => ({
@@ -59,6 +66,7 @@ function AppProvider({ children }) {
     removeCoin: removeCoin,
     isInFavorites: isInFavorites,
     confirmFavorites: confirmFavorites,
+    setFilteredCoins: setFilteredCoins,
   }));
 
   const [fetchCoins, setfetchCoins] = useState(() => []);
@@ -67,6 +75,7 @@ function AppProvider({ children }) {
     setPage((prevPage) => ({ ...prevPage, page: name }));
     console.log("Set page=" + JSON.stringify(page));
   };
+
   //Use effect
   useEffect(() => {
     const fetchMyApi = async () => {
@@ -79,9 +88,38 @@ function AppProvider({ children }) {
       setPage((prevPage) => ({ ...prevPage, fetchCoins: coinList }));
     };
     fetchMyApi();
+    fetchPrices();
 
     return () => {};
   }, []);
+
+  const fetchPrices = async () => {
+    if (page.firstVisit) return;
+    console.log("Going to get prices");
+    let priceList = await prices();
+    console.log(priceList);
+    setPage((prevPage) => ({ ...prevPage, prices: priceList }));
+  };
+
+  const prices = async () => {
+    let returnData = [];
+    console.log("******fav=" + page.favorites);
+    try {
+      for (let i = 0; i < page.favorites.length; i++) {
+        try {
+          console.log("calling price for .." + page.favorites[i]);
+          let priceData = await cc.priceFull(page.favorites[i], "USD");
+          console.log(priceData);
+          returnData.push(priceData);
+        } catch (e) {
+          console.warn("Fetch Price Error:", e);
+        }
+      }
+    } catch (e) {
+      console.warn("Error in loop" + e);
+    }
+    return returnData;
+  };
   //fetch
 
   console.log("Page=" + JSON.stringify(page));

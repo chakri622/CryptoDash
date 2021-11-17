@@ -7,6 +7,9 @@ const Content = ({ children }) => {
   if (!page.fetchCoins) {
     return <div>Loading Coins ...</div>;
   }
+  if (!page.firstVisit && !page.prices) {
+    return <div>Loading Prices ...</div>;
+  }
   return <div>{children}</div>;
 };
 
