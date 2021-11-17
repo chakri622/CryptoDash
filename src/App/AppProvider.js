@@ -38,25 +38,44 @@ function AppProvider({ children }) {
     if (!cryptoDashData) {
       return { page: "settings", firstVisit: true };
     }
-    let { favorites } = cryptoDashData;
-    return { favorites };
+    let { favorites, currentFavorite } = cryptoDashData;
+    return { favorites, currentFavorite };
   };
 
   const confirmFavorites = (favorites) => {
+    let currentFavorite = favorites[0];
     setPage((prevPage) => {
       fetchPrices();
-      return { ...prevPage, firstVisit: false, page: "dashboard" };
+      return {
+        ...prevPage,
+        firstVisit: false,
+        page: "dashboard",
+        currentFavorite,
+      };
     });
     console.log("confirm Favorites=" + favorites);
+    console.log("current favorites=" + currentFavorite);
     localStorage.setItem(
       "cryptoDash",
-      JSON.stringify({ favorites: favorites })
+      JSON.stringify({ favorites: favorites, currentFavorite })
     );
   };
 
   const setFilteredCoins = (filteredCoins) => {
     setPage((prevPage) => ({ ...prevPage, filteredCoins: filteredCoins }));
   };
+
+  const setCurrentFavorite = (sym) => {
+    setPage((prevPage) => ({ ...prevPage, currentFavorite: sym }));
+    localStorage.setItem(
+      "cryptoDash",
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem("cryptoDash")),
+        currentFavorite: sym,
+      })
+    );
+  };
+
   //Use state
   const [page, setPage] = useState(() => ({
     page: "dashboard",
@@ -65,6 +84,7 @@ function AppProvider({ children }) {
     addCoin: addCoin,
     removeCoin: removeCoin,
     isInFavorites: isInFavorites,
+    setCurrentFavorite: setCurrentFavorite,
     confirmFavorites: confirmFavorites,
     setFilteredCoins: setFilteredCoins,
   }));
