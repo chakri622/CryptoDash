@@ -6,11 +6,16 @@ import ReactHighcharts from "react-highcharts";
 import Theme from "./HighChartsTheme";
 
 const PriceChart = () => {
-  const { currentFavorite, fetchCoins } = useContext(AppContext);
+  const { historical } = useContext(AppContext);
+  console.log("Historical=" + JSON.stringify(historical));
   ReactHighcharts.Highcharts.setOptions(Theme);
   return (
     <Tile>
-      <ReactHighcharts config={ChartConfig()} />
+      {historical ? (
+        <ReactHighcharts config={ChartConfig(historical)} />
+      ) : (
+        <div>Loading Historical Charts....</div>
+      )}
     </Tile>
   );
 };

@@ -11,13 +11,17 @@ const SpotLightName = styled.div`
 
 const CoinSpotight = () => {
   const { currentFavorite, fetchCoins } = useContext(AppContext);
-  console.log(JSON.stringify(fetchCoins));
-  return (
-    <Tile>
-      <SpotLightName>{fetchCoins[currentFavorite].CoinName}</SpotLightName>
-      <CoinImage coin={fetchCoins[currentFavorite]} spotLight />
-    </Tile>
-  );
+  //console.log(JSON.stringify(fetchCoins));
+  if (currentFavorite) {
+    return (
+      <Tile>
+        <SpotLightName>{fetchCoins[currentFavorite].CoinName}</SpotLightName>
+        <CoinImage coin={fetchCoins[currentFavorite]} spotLight />
+      </Tile>
+    );
+  } else {
+    return <div>No Favorites yet..</div>;
+  }
 };
 
 export default CoinSpotight;

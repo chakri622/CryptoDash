@@ -12,7 +12,7 @@ const PriceGridContainer = styled.div`
 
 const PriceGrid = () => {
   const { prices } = useContext(AppContext);
-  console.log("Prices=" + JSON.stringify(prices));
+  //console.log("Prices=" + JSON.stringify(prices));
   return (
     <PriceGridContainer>
       {prices.map((price, i) => (

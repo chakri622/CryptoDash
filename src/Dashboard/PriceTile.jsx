@@ -15,9 +15,9 @@ const TickerPrice = styled.div`
   ${fontSizeBig}
 `;
 const numberFormat = (number) => {
-  console.log("number=" + number);
+  //console.log("number=" + number);
   if (typeof number !== "undefined") {
-    console.log("In=" + number);
+    //console.log("In=" + number);
     return +(number + " ").slice(0, 7);
   } else return 0;
 };
@@ -52,7 +52,7 @@ const ChangePercent = ({ data }) => {
   return (
     <JustifyRight>
       <ChangePct red={numberFormat(data.CHANGE24HOUR) < 0}>
-        {numberFormat(data.CHANGE24HOUR)}
+        {numberFormat(data.CHANGE24HOUR)}%
       </ChangePct>
     </JustifyRight>
   );
@@ -83,8 +83,8 @@ const PriceTileDetail = ({
   currentFavorite,
   setCurrentFavorite,
 }) => {
-  console.log(`SYM[${sym}]=${JSON.stringify(data.CHANGE24HOUR)}`);
-  console.log(numberFormat(data.CHANGE24HOUR));
+  //console.log(`SYM[${sym}]=${JSON.stringify(data.CHANGE24HOUR)}`);
+  //console.log(numberFormat(data.CHANGE24HOUR));
 
   return (
     <PriceTileStyled
@@ -105,7 +105,7 @@ const PriceTile = ({ price, index }) => {
   let data = price[sym]["USD"];
   let TileClass = index < 5 ? PriceTileDetail : PriceTileCompact;
   let { currentFavorite, setCurrentFavorite } = useContext(AppContext);
-  console.log("tile - current favorites=" + currentFavorite);
+  //console.log("tile - current favorites=" + currentFavorite);
   return (
     <TileClass
       sym={sym}
