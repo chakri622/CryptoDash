@@ -4,6 +4,7 @@ import moment from "moment";
 const cc = require("cryptocompare");
 export const AppContext = React.createContext();
 export const AppUpdateContext = React.createContext();
+export const AppPropContext = React.createContext();
 
 const MAX_FAVORITES = 10;
 const TIME_UNITS = 10;
@@ -81,13 +82,14 @@ function AppProvider({ children }) {
       return { page: "settings", firstVisit: true };
     }
     console.log("-----------Historical current favorite = " + currentFavorite);
+    console.log("Time interval=" + page.timeInterval);
     let results = await historical();
     let historicalData = [
       {
         name: currentFavorite,
         data: results.map((ticker, index) => [
           moment()
-            .subtract({ months: TIME_UNITS - index })
+            .subtract({ [page.timeInterval]: TIME_UNITS - index })
             .valueOf(),
           ticker.USD,
         ]),
@@ -105,16 +107,25 @@ function AppProvider({ children }) {
       return { page: "settings", firstVisit: true };
     }
     let { currentFavorite } = cryptoDashData;
+    console.log("Time interval=" + page.timeInterval);
     //console.log("Coming here");
     //console.log("-----------Historical current favorite = " + currentFavorite);
     for (let units = 10; units > 0; units--) {
       //console.log("In Loop***********currentFavorite" + currentFavorite);
-      console.log("***Date=" + moment().subtract({ months: units }).toDate());
+      console.log(
+        "***Date=" +
+          moment()
+            .subtract({ [page.timeInterval]: units })
+            .toDate()
+      );
+
       promises.push(
         await cc.priceHistorical(
           currentFavorite,
           ["USD"],
-          moment().subtract({ months: units }).toDate()
+          moment()
+            .subtract({ [page.timeInterval]: units })
+            .toDate()
         )
       );
     }
@@ -124,7 +135,6 @@ function AppProvider({ children }) {
     setPage((prevPage) => ({
       ...prevPage,
       currentFavorite: sym,
-      historical: null,
     }));
     console.log("%%%%%%%%%%Going to fetch historical Data");
 
@@ -137,18 +147,28 @@ function AppProvider({ children }) {
     );
     fetchHistoricalData();
   };
+  const changeChartSelect = (value, state) => {
+    console.log("Chart value=" + JSON.stringify(page));
+    setPage((prevPage) => ({
+      ...prevPage,
+      timeInterval: value,
+    }));
 
+    console.log("new state=" + JSON.stringify(page));
+  };
   //Use state
   const [page, setPage] = useState(() => ({
     page: "dashboard",
     favorites: ["BTC", "ETH", "ADA", "DOGE"],
     ...savedSettings(),
+    timeInterval: "months",
     addCoin: addCoin,
     removeCoin: removeCoin,
     isInFavorites: isInFavorites,
     setCurrentFavorite: setCurrentFavorite,
     confirmFavorites: confirmFavorites,
     setFilteredCoins: setFilteredCoins,
+    changeChartSelect: changeChartSelect,
   }));
 
   const [fetchCoins, setfetchCoins] = useState(() => []);
@@ -156,6 +176,14 @@ function AppProvider({ children }) {
     //console.log("In set page=" + name);
     setPage((prevPage) => ({ ...prevPage, page: name }));
     //console.log("Set page=" + JSON.stringify(page));
+  };
+
+  const setCurrentProp = (obj) => {
+    console.log("JSON.stringify" + JSON.stringify(obj));
+    setPage((page) => ({ ...page, ...obj, historical: null }));
+    fetchHistoricalData();
+
+    console.log("Set Current Prop=" + JSON.stringify(page));
   };
 
   //Use effect
@@ -209,7 +237,9 @@ function AppProvider({ children }) {
   return (
     <AppContext.Provider value={page}>
       <AppUpdateContext.Provider value={setCurrentPage}>
-        {children}
+        <AppPropContext.Provider value={setCurrentProp}>
+          {children}
+        </AppPropContext.Provider>
       </AppUpdateContext.Provider>
     </AppContext.Provider>
   );
